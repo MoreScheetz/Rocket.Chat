@@ -229,7 +229,7 @@ chdir /var/www/rocket.chat
 
 script
     # Showtime
-    exec /root/docker-compose up db
+docker-compose up db
 end script" > /etc/init/rocketchat_mongo.conf
 
 #Upstart Job for Rocket.Chat
@@ -248,7 +248,7 @@ chdir /var/www/rocket.chat
 
 script
     # Bring up rocketchat app and hubot
-    exec /root/docker-compose up rocketchat hubot
+docker-compose up rocketchat hubot
 end script " > /etc/init/rocketchat_app.conf
 
 #-------------------------------------------------------------------------------------------------------Automatic Startup
