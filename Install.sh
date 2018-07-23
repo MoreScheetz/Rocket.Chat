@@ -161,8 +161,6 @@ echo "server {
         }
     }" > /etc/nginx/sites-available/default
     
-    #Test the Config
-    sudo service nginx configtest && sudo service nginx restart
 
 
 #-------------------------------------------------------------------------------------------------------------------Nginx
