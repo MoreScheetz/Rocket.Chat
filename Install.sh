@@ -206,7 +206,7 @@ hubot:
 # this is used to expose the hubot port for notifications on the host on port 3001, e.g. for hubot-jenkins-notifier
   ports:
     - 3001:8080
-    " > /var/www/rocket.chat/docker-compose.yml
+    " > /root/docker-compose.yml
 
 #--------------------------------------------------------------------------------------------Docker Compose-------
 
@@ -229,7 +229,7 @@ chdir /var/www/rocket.chat
 
 script
     # Showtime
-    exec /usr/local/bin/docker-compose up db
+    exec /root/docker-compose up db
 end script" > /etc/init/rocketchat_mongo.conf
 
 #Upstart Job for Rocket.Chat
@@ -248,7 +248,7 @@ chdir /var/www/rocket.chat
 
 script
     # Bring up rocketchat app and hubot
-    exec /usr/local/bin/docker-compose up rocketchat hubot
+    exec /root/docker-compose up rocketchat hubot
 end script " > /etc/init/rocketchat_app.conf
 
 #-------------------------------------------------------------------------------------------------------Automatic Startup
