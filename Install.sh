@@ -167,6 +167,107 @@ echo "server {
 
 #-------------------------------------------------------------------------------------------------------------------Nginx
 
+# Create Docker Compose File and Directories ---------------------------------------------------------------------------
+
+# Directories
+sudo mkdir -p /var/www/rocket.chat/data/runtime/db
+sudo mkdir -p /var/www/rocket.chat/data/dump
+
+#Create the docker-compose.yml file:
+
+echo "
+db:
+  image: mongo
+  volumes:
+    - ./data/runtime/db:/data/db
+    - ./data/dump:/dump
+  command: mongod --smallfiles
+
+rocketchat:
+  image: rocketchat/rocket.chat:latest
+  environment:
+    - MONGO_URL=mongodb://db:27017/rocketchat
+    - ROOT_URL=https://$HOSTNAME
+    - Accounts_UseDNSDomainCheck=True
+  links:
+    - db:db
+  ports:
+    - 3000:3000
+
+hubot:
+  image: rocketchat/hubot-rocketchat:latest
+  environment:
+    - ROCKETCHAT_URL=$IP:3000
+    - ROCKETCHAT_ROOM=GENERAL
+    - ROCKETCHAT_USER=Botname
+    - ROCKETCHAT_PASSWORD=BotPassw0rd
+    - BOT_NAME=Botname
+    - EXTERNAL_SCRIPTS=hubot-help,hubot-seen,hubot-links,hubot-greetings
+  links:
+    - rocketchat:rocketchat
+# this is used to expose the hubot port for notifications on the host on port 3001, e.g. for hubot-jenkins-notifier
+  ports:
+    - 3001:8080
+    " > /var/www/rocket.chat/docker-compose.yml
+
+#--------------------------------------------------------------------------------------------Docker Compose-------
+
+# Automatic Startup & Crash Recovery-----------------------------------------------------------------------------
+
+#UpStart Job for Mongo
+echo "
+description "MongoDB service manager for rocketchat"
+
+# Start MongoDB after docker is running
+start on (started docker)
+stop on runlevel [!2345]
+
+# Automatically Respawn with finite limits
+respawn
+respawn limit 99 5
+
+# Path to our app
+chdir /var/www/rocket.chat
+
+script
+    # Showtime
+    exec /usr/local/bin/docker-compose up db
+end script" > /etc/init/rocketchat_mongo.conf
+
+#Upstart Job for Rocket.Chat
+
+echo "
+# Start Rocketchat only after mongo job is running
+start on (started rocketchat_mongo)
+stop on runlevel [!2345]
+
+# Automatically Respawn with finite limits
+respawn
+respawn limit 99 5
+
+# Path to our app
+chdir /var/www/rocket.chat
+
+script
+    # Bring up rocketchat app and hubot
+    exec /usr/local/bin/docker-compose up rocketchat hubot
+end script " > /etc/init/rocketchat_app.conf
+
+#-------------------------------------------------------------------------------------------------------Automatic Startup
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
