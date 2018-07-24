@@ -227,7 +227,7 @@ respawn
 respawn limit 99 5
 
 # Path to our app
-chdir /var/www/rocket.chat
+cd 
 
 script
     # Showtime
@@ -246,7 +246,7 @@ respawn
 respawn limit 99 5
 
 # Path to our app
-chdir /var/www/rocket.chat
+cd
 
 script
     # Bring up rocketchat app and hubot
@@ -255,11 +255,6 @@ end script " > /etc/init/rocketchat_app.conf
 
 #-------------------------------------------------------------------------------------------------------Automatic Startup
 
-# Install Upstart --------------------------------------------------------------------------------------------------
-
-#sudo apt install upstart
-
-#-------------------------------------------------------------------------------------------------------------Upstart
 
 
 
