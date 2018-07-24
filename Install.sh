@@ -80,11 +80,13 @@ sudo apt-get update
 sudo apt-get install fail2ban
 
 #----------------------------------------------------------------------------------------------------Fail2Ban
+# Install Curl
+sudo apt-get install curl
 
 # Install Docker -----------------------------------------------------------------------------------------------
 
 sudo apt-get update
-sudo apt-get install docker-ce
+sudo apt-get install docker.io
 
 ---------------------------------------------------------------------------------------------------Docker Install
 
