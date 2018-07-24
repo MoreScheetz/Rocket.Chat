@@ -208,53 +208,26 @@ hubot:
 # this is used to expose the hubot port for notifications on the host on port 3001, e.g. for hubot-jenkins-notifier
   ports:
     - 3001:8080
-    " > /root/docker-compose.yml
+    " > /var/www/rocket.chat/docker-compose.yml
 
 #--------------------------------------------------------------------------------------------Docker Compose-------
 
-# Automatic Startup & Crash Recovery-----------------------------------------------------------------------------
 
-#UpStart Job for Mongo
-echo "
-description "MongoDB service manager for rocketchat"
-
-# Start MongoDB after docker is running
-start on (started docker)
-stop on runlevel [!2345]
-
-# Automatically Respawn with finite limits
-respawn
-respawn limit 99 5
-
-# Path to our app
-cd 
-
-script
-    # Showtime
-docker-compose up db
-end script" > /etc/init/rocketchat_mongo.conf
-
-#Upstart Job for Rocket.Chat
+# Create Mongo & Rocket Chat Script for Cron ----------------------------------------------------------------------------
 
 echo "
-# Start Rocketchat only after mongo job is running
-start on (started rocketchat_mongo)
-stop on runlevel [!2345]
-
-# Automatically Respawn with finite limits
-respawn
-respawn limit 99 5
-
 # Path to our app
-cd
+cd /var/www/rocket.chat
 
-script
-    # Bring up rocketchat app and hubot
-docker-compose up rocketchat hubot
-end script " > /etc/init/rocketchat_app.conf
+# Showtime
+/usr/local/bin/docker-compose up db rocketchat hubot
+" > /usr/local/bin/rocketchat_mongo.sh
 
-#-------------------------------------------------------------------------------------------------------Automatic Startup
+#Permissions
+chmod 744 /usr/local/bin/rocketchat_mongo.sh
 
+
+#-------------------------------------------------------------------------------------------------- Cron Job
 
 
 
